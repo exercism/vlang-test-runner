@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     name: Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
         uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
@@ -27,7 +27,7 @@ jobs:
           context: .
           push: false
           load: true
-          tags: exercism/test-runner
+          tags: exercism/vlang-test-runner
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
