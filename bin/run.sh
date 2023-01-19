@@ -33,8 +33,6 @@ echo "${slug}: testing..."
 
 cd "${solution_dir}" > /dev/null
 
-v -stats test run_test.v
-
 # Run the tests for the provided implementation file and redirect stdout and
 # stderr to capture it
 test_output=$(v -stats test run_test.v 2>&1)
