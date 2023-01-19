@@ -45,7 +45,14 @@ cd - > /dev/null
 if [ ${exit_code} -eq 0 ]; then
     jq -n '{version: 1, status: "pass"}' > ${results_file}
 else
-    jq -n --arg output "${test_output}" '{version: 1, status: "fail", message: $output}' > ${results_file}
+    echo "${test_output}" | grep -q "error:"
+    if [[ $? -eq 0 ]]; then
+        status="error"
+    else
+        status="fail"
+    fi
+
+    jq -n --arg output "${test_output}" --arg status "${status}" '{version: 1, status: $status, message: $output}' > ${results_file}
 fi
 
 echo "${slug}: done"
