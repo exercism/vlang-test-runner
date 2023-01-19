@@ -1,7 +1,10 @@
-FROM alpine:3.10
+FROM thevlang/vlang:alpine-dev
 
-# install packages required to run the tests
-RUN apk add --no-cache jq coreutils
+RUN apk add --no-cache jq sed
+
+WORKDIR /tmp/sample
+COPY pre-compile/ ./
+RUN v -stats test run_test.v
 
 WORKDIR /opt/test-runner
 COPY . .
