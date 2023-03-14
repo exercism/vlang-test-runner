@@ -1,5 +1,8 @@
 FROM thevlang/vlang:alpine-dev
 
+# Increment this value to force rebuilding of the image
+ARG CACHE_BUSTER=1
+
 RUN apk add --no-cache jq sed
 
 WORKDIR /tmp/sample
