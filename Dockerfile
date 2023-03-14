@@ -1,29 +1,29 @@
-#FROM thevlang/vlang:alpine-dev
-# The official vlang docker image contains a version of V that is both well behind the
-# mainstream version of V, and cannot be pinned to a known version. So, create our own.
+FROM thevlang/vlang:alpine-build AS build
+# The vlang "-dev" images currently contain a version of V that is both well behind the
+# mainstream version of V, and cannot be pinned to a known version. So instead we use
+# their "-build" image to get the dependencies we need, and build the version of V we want.
+# This trades a longer build for a more deterministic and maintainable one.
 # Ref: https://github.com/exercism/vlang-test-runner/issues/10
 
-# Conveniently however, vlang maintain a minimal image capable of *building* V. At the
-# moment that's just what we want, and allows us to specify the version of V we want
-# without needing to install the dependencies.
-FROM thevlang/vlang:alpine-build AS build
+# Specify the version of V to build. The defaults give the recent known-good "V 0.3.3 b71c131"
+# from https://github.com/vlang/v/tree/b71c131678c56adaf3feb0cff896176326cdd043
+ARG v_branch=master
+ARG v_hash=b71c131678c56adaf3feb0cff896176326cdd043
 
-# The only thing left to do is build V. This is inspired by:
+# Use the same method to build V as in:
 # https://github.com/vlang/docker/blob/master/docker/vlang/Dockerfile.alpine
-# But is pinned to the recent known good version in commit:
-# https://github.com/vlang/v/tree/b71c131678c56adaf3feb0cff896176326cdd043
-# This produces version "V 0.3.3 b71c131"
+# Note: The combination of Alpine, emulation and tcc seem to make this an inefficient method.
+#       Given V is typically fast to build, there may be improvements available here.
 WORKDIR /opt/vlang
-RUN git clone --branch master https://github.com/vlang/v /opt/vlang && \
-	git checkout b71c131678c56adaf3feb0cff896176326cdd043 && \
+RUN git clone --branch ${v_branch} https://github.com/vlang/v /opt/vlang && \
+	git checkout ${v_hash} && \
 	make VFLAGS='-cc gcc' && \
 	v -version
 
-# Build done, so we can now return to the original task:
 
 FROM thevlang/vlang:alpine-base AS run
 
-# Inspired by https://github.com/vlang/docker/blob/master/docker/vlang/Dockerfile.alpine
+# Run time pre-reqs, derived from https://github.com/vlang/docker/blob/master/docker/vlang/Dockerfile.alpine
 ENV VFLAGS="-cc gcc"
 RUN apk --no-cache add \
     gcc musl-dev git libexecinfo-static libexecinfo-dev libc-dev
