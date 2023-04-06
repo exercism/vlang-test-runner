@@ -1,37 +1,44 @@
-FROM thevlang/vlang:alpine-build AS build
-# The vlang "-dev" images currently contain a version of V that is both well behind the
-# mainstream version of V, and cannot be pinned to a known version. So instead we use
-# their "-build" image to get the dependencies we need, and build the version of V we want.
-# This trades a longer build for a more deterministic and maintainable one.
-# Ref: https://github.com/exercism/vlang-test-runner/issues/10
+FROM alpine:3.17 as install
 
-# Specify the version of V to build. The defaults give the recent known-good "V 0.3.3 b71c131"
-# from https://github.com/vlang/v/tree/b71c131678c56adaf3feb0cff896176326cdd043
-ARG v_branch=master
-ARG v_hash=b71c131678c56adaf3feb0cff896176326cdd043
+# The official vlang -dev images are currently well behind the mainstream version of V, and cannot
+# be pinned to a known version. Alas, the official installation instructions involve a makefile
+# that `git clone`s the vlang/vc repo, so can't be relied on to be deterministic either.
+# However, pre-built releases are now available, which is a reliable route for our purposes.
 
-# Use the same method to build V as in:
-# https://github.com/vlang/docker/blob/master/docker/vlang/Dockerfile.alpine
-# Note: The combination of Alpine, emulation and tcc seem to make this an inefficient method.
-#       Given V is typically fast to build, there may be improvements available here.
+# Specify the release of V to download. 
+ARG release_tag=weekly.2023.14
+ARG release_filename=v_linux.zip
+
 WORKDIR /opt/vlang
-RUN git clone --branch ${v_branch} https://github.com/vlang/v /opt/vlang && \
-	git checkout ${v_hash} && \
-	make VFLAGS='-cc gcc' && \
-	v -version
+RUN apk add --no-cache wget unzip
+RUN wget https://github.com/vlang/v/releases/download/${release_tag}/${release_filename}
+# Extract the zip and put the contents in current directory.
+RUN unzip ${release_filename} -d ./tmp && rm ${release_filename} && mv ./tmp/*/* .
+# And finally, check the executable is where we expect it
+RUN test -f v && test -x v
 
 
-FROM thevlang/vlang:alpine-base AS run
-
-# Run time pre-reqs, derived from https://github.com/vlang/docker/blob/master/docker/vlang/Dockerfile.alpine
-ENV VFLAGS="-cc gcc"
-RUN apk --no-cache add \
-    gcc musl-dev git libexecinfo-static libexecinfo-dev libc-dev
-
-RUN apk add --no-cache jq sed
-
+FROM thevlang/vlang:buster-base AS run
+# While the v in the vlang -dev images is out of date, the base images still contain
+# valuable run time pre-requisites, so we derive our run image from here:
+# https://github.com/vlang/docker/blob/master/docker/vlang/Dockerfile.buster
+# Note the pre-compiled release of V does not run on Alpine, hence the switch to Buster.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    clang llvm-dev && \
+    apt-get clean && rm -rf /var/cache/apt/archives/* && \
+    rm -rf /var/lib/apt/lists/*
 # Copy the prebuilt V compiler
-COPY --from=build /opt/vlang /opt/vlang
+COPY --from=install /opt/vlang /opt/vlang
+# Test it
+RUN v -version
+
+# Finally, we can do our business...
+RUN apt-get update && \
+		apt-get install -y --no-install-recommends \
+		jq sed && \
+    apt-get clean && rm -rf /var/cache/apt/archives/* && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /tmp/sample
 COPY pre-compile/ ./

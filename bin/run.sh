@@ -46,7 +46,7 @@ if [ ${exit_code} -eq 0 ]; then
     jq -n '{version: 1, status: "pass"}' > ${results_file}
 else
     echo "${test_output}" | grep -q "error:"
-    if [[ $? -eq 0 ]]; then
+    if [ $? -eq 0 ]; then
         status="error"
     else
         status="fail"
