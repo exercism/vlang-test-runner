@@ -24,8 +24,8 @@ for test_dir in tests/*; do
 
     # Normalize the results file
     sed -i -E \
-      -e 's/\s*Runtime: [0-9]+ ms, on [0-9]+ job.\s*//g' \
-      -e 's/\s*[0-9]+\.[0-9]+ ms\s*//g' \
+      -e 's/\s*Elapsed time: [0-9]+ ms, on [0-9]+ job.\s*//g' \
+      -e 's/\s*[0-9]+(\.[0-9]+)? ms\s*//g' \
       -e 's/\s*[0-9]+ (v?lines|bytes)\s*//g' \
       -e 's#v_[0-9]+/tsession[^/]+#tsession#g' \
       "${results_file_path}"
