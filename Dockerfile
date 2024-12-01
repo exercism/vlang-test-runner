@@ -1,4 +1,4 @@
-FROM alpine:3.17 as install
+FROM alpine:3.17 AS install
 
 # The official vlang -dev images are currently well behind the mainstream version of V, and cannot
 # be pinned to a known version. Alas, the official installation instructions involve a makefile
