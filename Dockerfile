@@ -18,11 +18,11 @@ RUN unzip ${release_filename} -d ./tmp && rm ${release_filename} && mv ./tmp/*/*
 RUN test -f v && test -x v
 
 
-FROM thevlang/vlang:buster-base AS run
+FROM debian:bookworm AS run
 # While the v in the vlang -dev images is out of date, the base images still contain
 # valuable run time pre-requisites, so we derive our run image from here:
-# https://github.com/vlang/docker/blob/master/docker/vlang/Dockerfile.buster
-# Note the pre-compiled release of V does not run on Alpine, hence the switch to Buster.
+# https://github.com/vlang/docker/blob/master/docker/base/Dockerfile.debian
+# Note the pre-compiled release of V does not run on Alpine, hence the switch to Debian.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     clang llvm-dev && \
@@ -30,6 +30,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 # Copy the prebuilt V compiler
 COPY --from=install /opt/vlang /opt/vlang
+# Add vlang to path
+ENV PATH "/opt/vlang:${PATH}"
 # Test it
 RUN v -version
 
