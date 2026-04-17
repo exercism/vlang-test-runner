@@ -1,4 +1,51 @@
 {
-  "version": 1,
-  "status": "pass"
+  "version": 2,
+  "status": "pass",
+  "tests": [
+    {
+      "name": "test_not_divisible_by_4",
+      "status": "pass",
+      "test_code": "assert !is_leap_year(2015)"
+    },
+    {
+      "name": "test_divisible_by_2_not_by_4",
+      "status": "pass",
+      "test_code": "assert !is_leap_year(1970)"
+    },
+    {
+      "name": "test_divisible_by_4_not_by_100",
+      "status": "pass",
+      "test_code": "assert is_leap_year(1996)"
+    },
+    {
+      "name": "test_divisible_by_4_and_5",
+      "status": "pass",
+      "test_code": "assert is_leap_year(1960)"
+    },
+    {
+      "name": "test_divisible_by_100_not_by_400",
+      "status": "pass",
+      "test_code": "assert !is_leap_year(2100)"
+    },
+    {
+      "name": "test_divisible_by_100_not_by_3",
+      "status": "pass",
+      "test_code": "assert !is_leap_year(1900)"
+    },
+    {
+      "name": "test_divisible_by_400",
+      "status": "pass",
+      "test_code": "assert is_leap_year(2000)"
+    },
+    {
+      "name": "test_divisible_by_100_not_by_125",
+      "status": "pass",
+      "test_code": "assert is_leap_year(2400)"
+    },
+    {
+      "name": "test_divisible_by_200_not_by_400",
+      "status": "pass",
+      "test_code": "assert !is_leap_year(1800)"
+    }
+  ]
 }

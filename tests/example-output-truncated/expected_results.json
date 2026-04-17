@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "status": "fail",
+  "tests": [
+    {
+      "name": "test_no_matches",
+      "status": "pass",
+      "test_code": "candidates := ['hello', 'world', 'zombies', 'pants']\nexpected := []string{}\nassert find_anagrams('diaper', candidates) == expected"
+    },
+    {
+      "name": "test_detects_anagram",
+      "status": "fail",
+      "message": "run_test.v:12: fn test_detects_anagram\n   > assert find_anagrams('listen', candidates) == expected\n     Left value: []\n    Right value: ['inlets']\n",
+      "test_code": "candidates := ['enlists', 'google', 'inlets', 'banana']\nexpected := ['inlets']\nassert find_anagrams('listen', candidates) == expected"
+    },
+    {
+      "name": "test_detects_many_anagrams",
+      "status": "fail",
+      "message": "run_test.v:50: fn test_detects_many_anagrams\n  > assert find_anagrams('ABCDEFGHIJKLMNOPQRSTUVWXYZ', candidates) == expected\n    Left value:\n      []\n    Right value:\n      ['ZYXWVUTSRQPONMLKJIHGFEDCBA', 'MNOPQRSTUVWXYZABCDEFGHIJKL', 'BADCFEHGJILKNMPORQTSVUXWZY', 'QWERTYUIOPASDFGHJKLZXCVBNM', 'GHIJKLMNOPQRSTUVWXYZABCDEF', 'STUVWXYZABCDEFGHIJKLMNOPQR', 'DCBAEFGHIJKLMNOPQRSTUVWXYZ', 'AZBYCXDWEVFUGTHSIRJQKPLOMN', 'ZAYXBWCVDUESFTGRHQIPJOKLNM', 'NMLKJIHGFEDCBAZYXWVUTSRQPO', 'BDFHJLNPRTVXZACEGIKMOQSUWY', 'YWUSQOMKIGECAXZVTRPNLJHFDB', 'JKLMNOPQRSTUVWXYZABCDEFGHI', 'PONMLKJIHGFEDCBAZYXWVUTSRQ', 'LKJIHGFEDCBAZYXWVUTSRQPONM']\n",
+      "test_code": "candidates := [\n\t'ZYXWVUTSRQPONMLKJIHGFEDCBA',\n\t'MNOPQRSTUVWXYZABCDEFGHIJKL',\n\t'BADCFEHGJILKNMPORQTSVUXWZY',\n\t'QWERTYUIOPASDFGHJKLZXCVBNM',\n\t'GHIJKLMNOPQRSTUVWXYZABCDEF',\n\t'STUVWXYZABCDEFGHIJKLMNOPQR',\n\t'DCBAEFGHIJKLMNOPQRSTUVWXYZ',\n\t'AZBYCXDWEVFUGTHSIRJQKPLOMN',\n\t'ZAYXBWCVDUESFTGRHQIPJOKLNM',\n\t'NMLKJIHGFEDCBAZYXWVUTSRQPO',\n\t'BDFHJLNPRTVXZACEGIKMOQSUWY',\n\t'YWUSQOMKIGECAXZVTRPNLJHFDB',\n\t'JKLMNOPQRSTUVWXYZABCDEFGHI',\n\t'PONMLKJIHGFEDCBAZYXWVUTSRQ',\n\t'LKJIHGFEDCBAZYXWVUTSRQPONM',\n]\nexpected := [\n\t'ZYXWVUTSRQPONMLKJIHGFEDCBA',\n\t'MNOPQRSTUVWXYZABCDEFGHIJKL',\n\t'BADCFEHGJILKNMPORQTSVUXWZY',\n\t'QWERTYUIOPASDFGHJKLZXCVBNM',\n\t'GHIJKLMNOPQRSTUVWXYZABCDEF',\n\t'STUVWXYZABCDEFGHIJKLMNOPQR',\n\t'DCBAEFGHIJKLMNOPQRSTUVWXYZ',\n\t'AZBYCXDWEVFUGTHSIRJQKPLOMN',\n\t'ZAYXBWCVDUESFTGRHQIPJOKLNM',\n\t'NMLKJIHGFEDCBAZYXWVUTSRQPO',\n\t'BDFHJLNPRTVXZACEGIKMOQSUWY',\n\t'YWUSQOMKIGECAXZVTRPNLJHFDB',\n\t'JKLMNOPQRSTUVWXYZABCDEFGHI',\n\t'PONMLKJIHGFEDCBAZYXWVUTSRQ',\n\t'LKJIHGFEDCBAZYXWVUTSRQPONM',\n]\nassert find_anagrams('ABCDEFGHIJKLMNOPQRSTUVWXYZ', candidates) == expected"
+    }
+  ]
+}
