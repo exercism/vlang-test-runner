@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "status": "pass",
+  "tests": [
+    {
+      "name": "test_no_matches",
+      "status": "pass",
+      "test_code": "candidates := ['hello', 'world', 'zombies', 'pants']\nexpected := []string{}\nassert find_anagrams('diaper', candidates) == expected"
+    },
+    {
+      "name": "test_detects_three_anagrams",
+      "status": "pass",
+      "test_code": "candidates := ['gallery', 'ballerina', 'regally', 'clergy', 'largely', 'leading']\nexpected := ['gallery', 'regally', 'largely']\nassert find_anagrams('allergy', candidates) == expected"
+    },
+    {
+      "name": "test_detects_anagrams_case_insensitively",
+      "status": "pass",
+      "test_code": "candidates := ['cashregister', 'Carthorse', 'radishes']\nexpected := ['Carthorse']\nassert find_anagrams('Orchestra', candidates) == expected"
+    },
+    {
+      "name": "test_different_characters_may_have_the_same_bytes",
+      "status": "pass",
+      "test_code": "candidates := ['€a']\nexpected := []string{}\nassert find_anagrams('a⬂', candidates) == expected"
+    }
+  ]
+}

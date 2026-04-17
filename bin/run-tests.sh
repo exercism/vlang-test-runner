@@ -27,7 +27,7 @@ for test_dir in tests/*; do
       -e 's/\s*Elapsed time: [0-9]+ ms, on [0-9]+ job.\s*//g' \
       -e 's/\s*[0-9]+(\.[0-9]+)? ms\s*//g' \
       -e 's/\s*[0-9]+ (v?lines|bytes)\s*//g' \
-      -e 's#v_[0-9]+/tsession[^/]+#tsession#g' \
+      -e 's#v_[0-9]+/tsession[^/ "]+#tsession#g' \
       "${results_file_path}"
 
     echo "${test_dir_name}: comparing results.json to expected_results.json"
