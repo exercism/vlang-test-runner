@@ -18,7 +18,7 @@ RUN unzip ${release_filename} -d ./tmp && rm ${release_filename} && mv ./tmp/*/*
 RUN test -f v && test -x v
 
 
-FROM debian:bookworm AS run
+FROM debian:bookworm-slim@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252
 # While the v in the vlang -dev images is out of date, the base images still contain
 # valuable run time pre-requisites, so we derive our run image from here:
 # https://github.com/vlang/docker/blob/master/docker/base/Dockerfile.debian
