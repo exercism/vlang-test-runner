@@ -22,8 +22,15 @@ FROM debian:trixie-slim@sha256:109e2c65005bf160609e4ba6acf7783752f8502ad218e2982
 # valuable run time pre-requisites, so we derive our run image from here:
 # https://github.com/vlang/docker/blob/master/docker/base/Dockerfile.debian
 # Note the pre-compiled release of V does not run on Alpine, hence the switch to Debian.
+# V compiles its generated C with tcc (the Tiny C Compiler, ~0.3 MB) instead of
+# clang+llvm-dev (~880 MB):
+#   libc6-dev  - headers/crt files tcc needs to produce executables
+#   libatomic1 - V's runtime links -latomic (tcc can't find it otherwise)
+# V invokes the default `cc` for its own internal tools, so tcc is made the default cc.
 RUN apt-get update && \
-    apt-get install --yes --no-install-recommends clang llvm-dev jq sed && \
+    apt-get install --yes --no-install-recommends tcc libc6-dev libatomic1 jq sed && \
+    ln -sf /usr/bin/tcc /usr/local/bin/cc && \
+    ln -sf libatomic.so.1 "$(dirname "$(find / -name libatomic.so.1 -print -quit)")/libatomic.so" && \
     apt-get clean && \
     rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 
@@ -37,7 +44,7 @@ RUN v -version
 # Finally, we can do our business...
 WORKDIR /tmp/sample
 COPY pre-compile/ ./
-RUN v -stats test run_test.v
+RUN v -gc none -stats test run_test.v
 
 WORKDIR /opt/test-runner
 COPY . .
