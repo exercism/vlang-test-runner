@@ -30,7 +30,7 @@ FROM debian:trixie-slim@sha256:109e2c65005bf160609e4ba6acf7783752f8502ad218e2982
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends tcc libc6-dev libatomic1 jq sed && \
     ln -sf /usr/bin/tcc /usr/local/bin/cc && \
-    ln -sf libatomic.so.1 "$(dirname "$(find / -name libatomic.so.1 | head -1)")/libatomic.so" && \
+    ln -sf libatomic.so.1 "$(dirname "$(find / -name libatomic.so.1 -print -quit)")/libatomic.so" && \
     apt-get clean && \
     rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 
