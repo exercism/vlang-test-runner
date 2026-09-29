@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "status": "fail",
+  "tests": [
+    {
+      "name": "test_divisible_by_4__and_5",
+      "status": "pass",
+      "test_code": "assert is_leap_year(1960)"
+    },
+    {
+      "name": "test_divisible_by_2__not__by_4",
+      "status": "pass",
+      "test_code": "assert !is_leap_year(1970)"
+    },
+    {
+      "name": "test_divisible_by_4__not_by_100",
+      "status": "pass",
+      "test_code": "assert is_leap_year(1996)"
+    },
+    {
+      "name": "test_divisible_by_100__not_by_125",
+      "status": "fail",
+      "message": "run_test.v:16: fn test_divisible_by_100.not_by_125\n    assert is_leap_year(2400)\n",
+      "test_code": "assert is_leap_year(2400)"
+    }
+  ]
+}

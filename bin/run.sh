@@ -105,11 +105,15 @@ test_results_json=$(printf '%s' "${test_output}" | jq -Rs '
 # ---------- Merge in source file order ----------
 # Use test_codes order (= source file order) as the authority.
 # For each test_code entry, find the matching result by name.
+#
+# V 0.4.x prints a test named `test_a__b` as `main.test_a.b()`, while V 0.5 and
+# later print the name as written. The names are therefore compared with `__`
+# folded to `.` on both sides, so that a test is matched on either version.
 tests_json=$(jq -n \
     --argjson codes "${test_codes_json}" \
     --argjson results "${test_results_json}" \
     '[ $codes[] | . as $c |
-        ($results[] | select(.name == $c.name)) // {status: "error", message: "Test did not run."}
+        ($results[] | select((.name | gsub("__"; ".")) == ($c.name | gsub("__"; ".")))) // {status: "error", message: "Test did not run."}
         | . + $c
     ]')
 
