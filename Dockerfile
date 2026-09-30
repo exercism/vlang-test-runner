@@ -6,7 +6,7 @@ FROM alpine:3.23.5@sha256:fd791d74b68913cbb027c6546007b3f0d3bc45125f797758156952
 # However, pre-built releases are now available, which is a reliable route for our purposes.
 
 # Specify the release of V to download. 
-ARG release_tag=0.4.8
+ARG release_tag=0.5.2
 ARG release_filename=v_linux.zip
 
 WORKDIR /opt/vlang
@@ -26,7 +26,12 @@ FROM debian:trixie-slim@sha256:109e2c65005bf160609e4ba6acf7783752f8502ad218e2982
 # clang+llvm-dev (~880 MB):
 #   libc6-dev  - headers/crt files tcc needs to produce executables
 #   libatomic1 - V's runtime links -latomic (tcc can't find it otherwise)
-# V invokes the default `cc` for its own internal tools, so tcc is made the default cc.
+# V 0.4.x invoked the default `cc` for its own internal tools, so tcc is made the
+# default cc. From 0.5 V ships its own TinyCC in the release archive
+# (thirdparty/tcc/tcc.exe, an ELF binary despite the name) and prefers it - see
+# vlib/v/pref/default.v, `try_to_use_tcc_by_default`. The system tcc is kept
+# deliberately: it is the fallback V reaches for via `first_available_ccompiler`
+# if the bundled one ever fails, so it is not dead weight.
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends tcc libc6-dev libatomic1 jq sed && \
     ln -sf /usr/bin/tcc /usr/local/bin/cc && \
