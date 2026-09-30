@@ -106,9 +106,17 @@ test_results_json=$(printf '%s' "${test_output}" | jq -Rs '
 # Use test_codes order (= source file order) as the authority.
 # For each test_code entry, find the matching result by name.
 #
-# V 0.4.x prints a test named `test_a__b` as `main.test_a.b()`, while V 0.5 and
-# later print the name as written. The names are therefore compared with `__`
-# folded to `.` on both sides, so that a test is matched on either version.
+# V demangles `__` to `.` in the names it reports: a test named `test_a__b`
+# comes back as `main.test_a.b()`. That is deliberate on V's side. `__` is the
+# compiler's internal mangling character for module paths - the CHANGELOG is
+# full of the names it leaks, e.g. `main__Foo_T_int_ptr` and
+# `sync__pool__process_in_thread` - and every test output format demangles it,
+# see vlib/v/preludes/test_runner_normal.v and its test_runner_{simple,tap,
+# teamcity}.v siblings. Measured on 0.4.8 and 0.5.2 alike: the reported name is
+# the source name with `__` folded to `.`, including for `___` and `____`. So
+# fold it on both sides here, which is the same transformation rather than a
+# version test. A `.` cannot occur in a V identifier, so folding is injective
+# and cannot make two different tests match.
 tests_json=$(jq -n \
     --argjson codes "${test_codes_json}" \
     --argjson results "${test_results_json}" \
