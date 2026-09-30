@@ -2,6 +2,12 @@
 
 The Docker image to automatically run tests on V solutions submitted to [Exercism].
 
+## Contributing
+
+We 💙 our community, but **this repository does not accept unsolicited pull requests at this time**.
+
+Please read this [community blog post][guidelines] for details.
+
 ## Run the test runner
 
 To run the tests of an arbitrary exercise, do the following:
