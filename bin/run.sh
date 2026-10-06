@@ -31,24 +31,40 @@ mkdir -p "${output_dir}"
 
 echo "${slug}: testing..."
 
+# Strip the solution directory prefix from paths so output is portable,
+# and remove ANSI color codes (V emits them even when captured)
+clean_output() {
+    printf '%s' "$1" | sed -e "s#${solution_dir}/\{0,1\}##g" -e 's/\x1b\[[0-9;]*m//g'
+}
+
+# Compile and run as separate steps, so that each exit code means one thing:
+# a compile failure, or a test failure. The binary goes in a temporary
+# directory because the solution directory is read-only in the container.
+build_dir=$(mktemp -d)
+
 cd "${solution_dir}" > /dev/null
 
-test_output=$(v -stats test run_test.v 2>&1)
-exit_code=$?
+compile_output=$(v -stats -skip-running -o "${build_dir}/run_test" run_test.v 2>&1)
+compile_exit_code=$?
+
+if [ ${compile_exit_code} -eq 0 ]; then
+    test_output=$("${build_dir}/run_test" 2>&1)
+    exit_code=$?
+fi
 
 cd - > /dev/null
 
-# Strip the solution directory prefix from paths so output is portable,
-# and remove ANSI color codes (V emits them even when captured)
-test_output=$(printf '%s' "${test_output}" | sed -e "s#${solution_dir}/\{0,1\}##g" -e 's/\x1b\[[0-9;]*m//g')
+rm -rf "${build_dir}"
 
 # ---------- Error case (compile failure) ----------
-if [ ${exit_code} -ne 0 ] && echo "${test_output}" | grep -q "error:"; then
-    jq -n --arg output "${test_output}" \
+if [ ${compile_exit_code} -ne 0 ]; then
+    jq -n --arg output "$(clean_output "${compile_output}")" \
         '{version: 2, status: "error", message: $output}' > "${results_file}"
     echo "${slug}: done"
     exit 0
 fi
+
+test_output=$(clean_output "${test_output}")
 
 # ---------- Extract test_code from the test file (in source order) ----------
 # Walks run_test.v line by line. When a "fn test_xxx() {" line is found,
