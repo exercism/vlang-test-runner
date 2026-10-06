@@ -47,10 +47,6 @@ ENV PATH="/opt/vlang:${PATH}"
 RUN v -version
 
 # Finally, we can do our business...
-WORKDIR /tmp/sample
-COPY pre-compile/ ./
-RUN v -gc none -stats test run_test.v
-
 WORKDIR /opt/test-runner
 COPY . .
 ENTRYPOINT ["/opt/test-runner/bin/run.sh"]
