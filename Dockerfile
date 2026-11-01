@@ -17,7 +17,7 @@ RUN unzip ${release_filename} -d ./tmp && rm ${release_filename} && mv ./tmp/*/*
 # And finally, check the executable is where we expect it
 RUN test -f v && test -x v
 
-FROM debian:trixie-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f
+FROM debian:trixie-slim@sha256:f6b08b09a05725f9431502d3b5714f5c4576e82c1a84fa1debe0c24a7e0c3ec4
 # While the v in the vlang -dev images is out of date, the base images still contain
 # valuable run time pre-requisites, so we derive our run image from here:
 # https://github.com/vlang/docker/blob/master/docker/base/Dockerfile.debian
